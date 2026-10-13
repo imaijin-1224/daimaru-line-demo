@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <title>大丸｜LINE注文デモ</title>
+  <style>
+    :root { --green:#157f4b;--line:#13bb63;--green-deep:#11663e;--ink:#242d27;--muted:#657368;--cream:#f5f6f0;--card:#fff;--border:#e3e9e0;--gold:#c98e49;--light:#eef8f0;--danger:#b84134; }
+    *{box-sizing:border-box} body{margin:0;background:#edf1ec;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;font-size:15px;line-height:1.5} button,input,select,textarea{font:inherit} button{cursor:pointer} button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #75cda2;outline-offset:2px}
+    .shell{max-width:950px;margin:36px auto;padding:0 18px;display:grid;grid-template-columns:minmax(0,430px) minmax(0,1fr);gap:32px;align-items:start}
+    .phone{background:white;border:1px solid #dce5db;border-radius:30px;box-shadow:0 18px 60px #24382720;overflow:hidden;min-height:760px;max-width:430px;width:100%;position:relative}
+    .apphead{background:linear-gradient(145deg,#fafff7,#eff9ee);padding:23px 22px 20px;border-bottom:1px solid var(--border)}
+    .brand{display:flex;gap:10px;align-items:center}.brand-logo{background:var(--green);color:white;border-radius:12px;width:42px;height:42px;display:grid;place-items:center;font-size:20px;font-weight:800;letter-spacing:-1px}.brand-text b{display:block;font-size:20px;letter-spacing:.03em}.brand-text small{display:block;color:var(--muted);font-size:11px}.demo-tag{font-size:10px;font-weight:800;background:#fff7e8;color:#976223;border:1px solid #eed6b0;padding:4px 8px;border-radius:99px;margin-left:auto;white-space:nowrap}
+    .steps{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-top:20px}.step{display:flex;align-items:center;gap:5px;color:#98a49a;font-size:11px;font-weight:700;white-space:nowrap}.step .dot{width:23px;height:23px;border:1px solid #cbd7cb;border-radius:50%;display:grid;place-items:center;font-size:11px;background:white}.step.active{color:var(--green)}.step.active .dot{color:white;background:var(--green);border-color:var(--green)}.step.done .dot{background:#e4f4e9;color:var(--green);border-color:#b6dec2}.step-sep{flex:1;height:1px;background:#dce5dc;min-width:4px}
+    main{padding:23px 21px 122px;min-height:570px}.eyebrow{font-size:11px;letter-spacing:.11em;color:var(--green);font-weight:800;margin-bottom:5px}.title{font-size:22px;font-weight:850;line-height:1.4;margin:0 0 6px}.subtitle{font-size:12px;color:var(--muted);margin:0 0 22px}.section-title{font-size:14px;font-weight:800;margin:21px 0 10px}.tabs{display:flex;gap:6px;overflow:auto;padding-bottom:8px}.tab{border:1px solid var(--border);padding:8px 13px;border-radius:100px;white-space:nowrap;background:white;color:var(--muted);font-size:12px;font-weight:700}.tab.selected{background:var(--green);border-color:var(--green);color:white}
+    .search{display:flex;align-items:center;gap:8px;background:#f7f9f6;border:1px solid var(--border);padding:0 12px;border-radius:11px;height:43px;margin-bottom:10px}.search span{color:#92a398}.search input{width:100%;min-width:0;border:0;outline:none;background:transparent;font-size:13px}
+    .product{display:flex;gap:12px;align-items:flex-start;border-bottom:1px solid var(--border);padding:16px 0}.product:last-child{border-bottom:0}.illustration{flex:0 0 76px;height:79px;display:flex;align-items:center;justify-content:center;background:#f4f1e8;border-radius:12px;font-size:37px;position:relative}.illustration.p-set{background:#f8efe7}.illustration.p-fold{background:#eef2e8}.kind{font-size:10px;letter-spacing:.03em;color:var(--green);background:#e5f3e8;border-radius:4px;padding:2px 5px;font-weight:700;position:absolute;bottom:5px;right:5px}.product-info{flex:1;min-width:0}.product-name{font-weight:800;font-size:14px;margin-bottom:3px}.product-sub{font-size:11px;color:var(--muted);line-height:1.6}.price-row{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-top:8px}.price{color:var(--green-deep);font-weight:850;font-size:16px}.price small{font-size:10px;color:var(--muted);font-weight:400}.quantity{display:flex;gap:5px;align-items:center}.qbutton{width:30px;height:30px;background:white;border:1px solid #bfd3c1;color:var(--green);border-radius:8px;font-weight:800;font-size:20px;display:grid;place-items:center;line-height:1}.qbutton:disabled{color:#b3bdb3;background:#f7f8f6;cursor:default}.qty-text{min-width:25px;text-align:center;font-weight:800}
+    .bubble{border:1px solid #cfe5d3;background:#f5fbf5;border-radius:12px;padding:12px 13px;color:#45644f;font-size:12px;margin:12px 0}.summarymini{display:flex;justify-content:space-between;gap:8px;padding:12px 14px;background:#f5f8f3;border-radius:12px;font-size:13px;margin:15px 0}.summarymini strong{color:var(--green);font-size:18px}
+    label.field{display:block;font-weight:750;font-size:12px;margin:16px 0 6px}.required{color:var(--danger);font-size:10px;margin-left:4px}.form-input,.form-select,.form-area{border:1px solid #d9e3d7;background:white;border-radius:10px;padding:12px 13px;font-size:14px;min-height:44px;width:100%;color:var(--ink)}.form-area{resize:vertical;min-height:83px}.inline-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.options{display:flex;gap:7px;flex-wrap:wrap}.pill{background:white;border:1px solid #d8e2d6;border-radius:10px;padding:9px 12px;color:#59685d;font-size:12px;font-weight:650;min-height:39px}.pill.active{background:#eaf7ee;color:var(--green-deep);border-color:#64ae7d}.muted{color:var(--muted);font-size:11px}.block{border:1px solid var(--border);padding:14px;border-radius:13px;margin:12px 0}.blockhead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.blockhead strong{font-size:14px}.mini{font-size:11px;color:var(--muted);margin-top:2px}.subblock{border-left:3px solid #b9dbc4;padding-left:11px;margin-top:11px}.line-info{display:flex;justify-content:space-between;gap:6px;margin:7px 0;font-size:12px}.line-info .label{color:var(--muted)}.divider{height:1px;background:var(--border);margin:14px 0}.hint{color:var(--muted);font-size:11px;line-height:1.6;margin-top:6px}
+    .receipt{border:1px solid var(--border);border-radius:13px;padding:15px;margin-top:14px}.receipt h3{font-size:14px;margin:0 0 13px}.receipt .item{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;font-size:13px;margin:8px 0}.receipt .item b{white-space:nowrap}.receipt .item small{display:block;color:var(--muted);font-size:11px}.receipt.total{background:#f4faf4;border-color:#cfe5d3}.receipt.total strong{font-size:22px;color:var(--green-deep)}
+    .footer{border-top:1px solid var(--border);box-shadow:0 -4px 18px #293b2310;background:white;padding:14px 20px 18px;position:absolute;bottom:0;width:100%}.footer .actions{display:flex;gap:9px}.btn-primary{background:var(--line);color:#083b1d;border:0;border-radius:12px;height:49px;font-weight:900;font-size:14px;flex:1}.btn-primary:hover{background:#0caf58}.btn-primary:disabled{background:#bbd7c4;color:#63846d;cursor:default}.btn-back{background:#fff;color:#637267;border:1px solid #dce7dd;border-radius:12px;padding:0 17px;font-weight:800}.totalsmall{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:9px;color:var(--muted)}.totalsmall strong{font-size:17px;color:var(--green-deep)}.error{color:var(--danger);background:#fff4f0;border:1px solid #efd1c8;border-radius:9px;padding:9px 10px;font-size:12px;margin-top:12px}
+    .complete-icon{width:85px;height:85px;background:#e2f5e7;border:4px solid #c6e8d1;border-radius:50%;color:var(--green);font-size:47px;margin:25px auto 18px;display:grid;place-items:center}.complete{text-align:center}.complete .title{margin-bottom:10px}.reference{display:inline-block;background:#f3f7f2;border:1px dashed #c8d8c9;border-radius:8px;padding:9px 22px;color:#365d42;font-size:18px;font-weight:850;margin:15px 0}
+    .side{padding:8px 0 0}.side .side-label{font-size:12px;color:var(--green);font-weight:850;letter-spacing:.1em}.side h1{font-size:30px;line-height:1.5;margin:10px 0 15px;font-weight:850}.side p{line-height:1.9;color:#5c6d61;font-size:14px}.side-panel{border:1px solid #dce5d9;background:white;border-radius:16px;padding:19px;margin-top:22px}.side-panel h2{font-size:14px;margin:0 0 11px}.side-panel ul{margin:0;padding-left:20px;color:#56685b;font-size:13px;line-height:2}.side-panel code{background:#f0f3ed;padding:2px 4px;border-radius:4px}.badge{display:inline-block;background:#e6f3e8;color:#206c42;font-size:11px;border-radius:100px;padding:5px 10px;font-weight:700}.demo-warning{margin-top:16px;color:#8b5d25;background:#fff7eb;padding:12px 14px;border-radius:10px;font-size:12px;line-height:1.8}.empty{padding:28px 12px;text-align:center;color:var(--muted);font-size:13px}
+    @media(max-width:820px){body{background:white}.shell{display:block;padding:0;max-width:430px;margin:0 auto}.phone{border-radius:0;border:0;box-shadow:none;max-width:none;min-height:100dvh}.side{display:none}.footer{position:sticky;bottom:0;z-index:10;box-shadow:0 -3px 13px #1d3a2117}main{min-height:calc(100dvh - 280px);padding-bottom:30px}.apphead{padding-top:20px}}@media(max-width:370px){.step{font-size:10px}.step .dot{width:20px;height:20px}.apphead,main{padding-left:15px;padding-right:15px}.footer{padding-left:15px;padding-right:15px}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="phone" id="phone">
+      <div class="apphead">
+        <div class="brand"><div class="brand-logo">大丸</div><div class="brand-text"><b>ご注文受付</b><small>LINEミニアプリ画面 試作品</small></div><span class="demo-tag">DEMO</span></div>
+        <div class="steps" id="steps"></div>
+      </div>
+      <main id="app" aria-live="polite"></main>
+      <div class="footer" id="footer"></div>
+    </div>
+    <aside class="side">
+      <div class="side-label">PROTOTYPE / 大丸様向け</div>
+      <h1>電話注文を、<br>もっと簡単に。</h1>
+      <p>スマートフォンから商品を選択し、受取日時・お客様情報・のしを入力する注文画面のサンプルです。画面のボタンを押して、実際の操作感を確認できます。</p>
+      <span class="badge">HTML・CSS・JavaScript だけで動作</span>
+      <div class="side-panel"><h2>この試作品で試せること</h2><ul><li>単品・セット・折りの商品選択</li><li>商品数量の変更と合計金額表示</li><li>来店店舗・受取希望日時・連絡先</li><li>商品ごとの包装・のし・名入れ</li><li>注文内容の確認・デモ完了画面</li></ul></div>
+      <div class="demo-warning"><strong>試作品の注意点</strong><div>商品名・金額・構成は仮データです。注文内容はLINE、AWS、SQL Serverのいずれにも送信・保存されません。</div></div>
+    </aside>
+  </div>
+<script>
+'use strict';
+// ここに実際の商品マスタ由来の公開データを差し替えます。
+const CATALOG = [
+  {id:'A0001',name:'商品A',category:'single',caption:'定番商品（サンプル）',price:1800,unit:'個',emoji:'🍘'},
+  {id:'B0001',name:'商品B',category:'single',caption:'人気商品（サンプル）',price:2500,unit:'個',emoji:'🍡'},
+  {id:'S0001',name:'詰め合わせセットA',category:'set',caption:'商品A × 2・商品B × 1（仮の構成）',price:4900,unit:'セット',emoji:'🎁'},
+  {id:'S0002',name:'詰め合わせセットB',category:'set',caption:'商品A × 1・商品B × 2（仮の構成）',price:6500,unit:'セット',emoji:'🎀'},
+  {id:'O0001',name:'折詰A（小）',category:'fold',caption:'小サイズ（仮）',price:3000,unit:'折',emoji:'🍱'},
+  {id:'O0002',name:'折詰A（大）',category:'fold',caption:'大サイズ（仮）',price:4300,unit:'折',emoji:'🥡'}
+];
+const CATEGORY = {single:'単品',set:'セット',fold:'折り'};
+const STEP_LABELS = ['商品','受取','のし','確認'];
+const state = {
+ step:0, filter:'all', search:'', cart:{A0001:2},
+ pickup:{store:'本店',date:'',time:'10:00〜12:00',name:'',phone:'',memo:''},
+ gift:{}, errors:[]
+};
+const app=document.getElementById('app');
+const footer=document.getElementById('footer');
+const steps=document.getElementById('steps');
+const today=new Date(); today.setHours(0,0,0,0); today.setDate(today.getDate()+1);
+const isoLocal=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+state.pickup.date=isoLocal(today);
+const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const fmt=n=>'¥'+Number(n).toLocaleString('ja-JP');
+const selected=()=>CATALOG.filter(p=>(state.cart[p.id]||0)>0);
+const qtySum=()=>selected().reduce((a,p)=>a+state.cart[p.id],0);
+const grand=()=>selected().reduce((a,p)=>a+p.price*state.cart[p.id],0);
+const giftFor=id=>state.gift[id]??(state.gift[id]={wrap:'不要',noshi:false,type:'御礼',name:'',count:1});
+const safeName=s=>esc(s||'未入力');
+function updateSteps(){
+ steps.innerHTML=STEP_LABELS.map((label,i)=>`<div class="step ${state.step===i?'active':state.step>i?'done':''}"><span class="dot">${state.step>i?'✓':i+1}</span>${label}</div>${i<3?'<span class="step-sep"></span>':''}`).join('');
+}
+function pageTitle(kicker,title,subtitle){return `<div class="eyebrow">${kicker}</div><h1 class="title">${title}</h1><p class="subtitle">${subtitle}</p>`}
+function renderProducts(){
+ const products=CATALOG.filter(p=>(state.filter==='all'||p.category===state.filter)&&(!state.search||p.name.toLowerCase().includes(state.search.toLowerCase())||p.caption.toLowerCase().includes(state.search.toLowerCase())));
+ return `<div id="products">${products.length?products.map(p=>`<article class="product"><div class="illustration ${p.category==='set'?'p-set':p.category==='fold'?'p-fold':''}" aria-hidden="true">${p.emoji}<span class="kind">${CATEGORY[p.category]}</span></div><div class="product-info"><div class="product-name">${esc(p.name)}</div><div class="product-sub">${esc(p.caption)}</div><div class="price-row"><div class="price">${fmt(p.price)} <small>/ ${esc(p.unit)}</small></div><div class="quantity"><button class="qbutton" type="button" data-action="dec" data-id="${p.id}" aria-label="${esc(p.name)}を減らす" ${!state.cart[p.id]?'disabled':''}>−</button><span class="qty-text">${state.cart[p.id]||0}</span><button class="qbutton" type="button" data-action="inc" data-id="${p.id}" aria-label="${esc(p.name)}を増やす">＋</button></div></div></div></article>`).join(''):'<div class="empty">該当する商品がありません。</div>'}</div>`;
+}
+function renderProductStep(){
+ const tabs=[['all','すべて'],['single','単品'],['set','セット'],['fold','折り']];
+ return pageTitle('STEP 01 / 商品選択','商品を選ぶ','ご希望の商品と数量を選択してください。')+
+ `<div class="tabs" role="tablist">${tabs.map(([id,name])=>`<button type="button" role="tab" aria-selected="${state.filter===id}" data-action="filter" data-value="${id}" class="tab ${state.filter===id?'selected':''}">${name}</button>`).join('')}</div>`+
+ `<label class="search"><span>⌕</span><input type="search" data-field="search" value="${esc(state.search)}" placeholder="商品名で探す" aria-label="商品名で検索"></label>`+
+ renderProducts()+`<div class="bubble">セット商品の構成は、将来的に既存の <strong>HBM_SHOHIKOUSEI</strong> から取得する想定です。「折り」の商品コード管理方法は確認後に調整します。</div>`+
+ `<div class="summarymini"><span>選択中 <b>${qtySum()}</b> 点</span><strong>${fmt(grand())}</strong></div>`;
+}
+function optionButtons(key,options){return `<div class="options">${options.map(o=>`<button type="button" class="pill ${state.pickup[key]===o?'active':''}" data-action="pickup-option" data-key="${key}" data-value="${esc(o)}">${esc(o)}</button>`).join('')}</div>`}
+function renderPickupStep(){const v=state.pickup;return pageTitle('STEP 02 / 受取・連絡先','受取日時を指定','今回は「来店受取」のご注文です。')+
+ `<div class="bubble"><strong>受取方法：来店受取</strong><br>希望日時は店舗側で確認後に確定します。</div>`+
+ `<label class="field">受取店舗<span class="required">必須</span></label>${optionButtons('store',['本店','支店'])}`+
+ `<label class="field" for="date">受取希望日<span class="required">必須</span></label><input id="date" class="form-input" type="date" data-field="date" min="${isoLocal(today)}" value="${esc(v.date)}">`+
+ `<label class="field">受取時間帯<span class="required">必須</span></label>${optionButtons('time',['10:00〜12:00','12:00〜14:00','14:00〜16:00','16:00〜18:00','指定なし'])}`+
+ `<div class="divider"></div><div class="section-title">お客様情報</div>`+
+ `<label class="field" for="name">お名前<span class="required">必須</span></label><input id="name" class="form-input" data-field="name" autocomplete="name" maxlength="60" placeholder="例：山田 太郎" value="${esc(v.name)}">`+
+ `<label class="field" for="phoneNumber">電話番号<span class="required">必須</span></label><input id="phoneNumber" class="form-input" data-field="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="例：09012345678" value="${esc(v.phone)}">`+
+ `<label class="field" for="memo">その他のご要望（任意）</label><textarea id="memo" class="form-area" data-field="memo" maxlength="300" placeholder="例：少し遅れて受け取る可能性があります">${esc(v.memo)}</textarea>`+
+ `<p class="hint">正式版では、初回にLINEのアカウントと既存顧客を紐付けることで、お客様情報の再入力を減らせます。</p>`;
+}
+function giftRadio(id,key,value,label){let g=giftFor(id);return `<button type="button" class="pill ${g[key]===value?'active':''}" data-action="gift-option" data-id="${id}" data-key="${key}" data-value="${esc(value)}">${esc(label)}</button>`}
+function renderGiftStep(){return pageTitle('STEP 03 / 包装・のし','包装・のしを指定','商品ごとに必要な場合だけ指定できます。')+
+ selected().map(p=>{let g=giftFor(p.id);let max=state.cart[p.id];let opts=['御礼','御祝','内祝','御供','その他'];return `<section class="block"><div class="blockhead"><div><strong>${esc(p.name)}</strong><div class="mini">${max}${esc(p.unit)} / ${fmt(p.price*max)}</div></div><span class="badge">${CATEGORY[p.category]}</span></div>`+
+ `<label class="field">包装</label><div class="options">${giftRadio(p.id,'wrap','不要','不要')}${giftRadio(p.id,'wrap','希望','包装を希望')}</div>`+
+ `<label class="field">のし</label><div class="options">${giftRadio(p.id,'noshi',false,'不要')}${giftRadio(p.id,'noshi',true,'のしを付ける')}</div>`+
+ (g.noshi?`<div class="subblock"><label class="field">表書き</label><select class="form-select" data-gift="type" data-id="${p.id}">${opts.map(o=>`<option value="${o}" ${g.type===o?'selected':''}>${o}</option>`).join('')}</select>`+
+ `<label class="field">名入れ（任意）</label><input class="form-input" type="text" maxlength="40" data-gift="name" data-id="${p.id}" value="${esc(g.name)}" placeholder="例：山田">`+
+ `<label class="field">のしを付ける数量</label><select class="form-select" data-gift="count" data-id="${p.id}">${Array.from({length:max},(_,i)=>i+1).map(n=>`<option value="${n}" ${Number(g.count)===n?'selected':''}>${n}${esc(p.unit)}</option>`).join('')}</select></div>`:'')+
+ `</section>`}).join('')+
+ `<p class="hint">例：同じ商品を2個注文しても「のしは1個だけ」という指定ができます。別々の表書きが必要な場合は、正式版で明細を分ける設計にします。</p>`;
+}
+function renderReviewStep(){const v=state.pickup;return pageTitle('STEP 04 / 内容確認','ご注文内容を確認','内容に間違いがないかお確かめください。')+
+ `<section class="receipt"><h3>ご注文商品</h3>${selected().map(p=>{const g=giftFor(p.id);return `<div class="item"><span><b>${esc(p.name)}</b><small>${state.cart[p.id]}${esc(p.unit)} ／ ${fmt(p.price)} × ${state.cart[p.id]}</small><small>包装：${esc(g.wrap)} ／ のし：${g.noshi?`${esc(g.type)}（${g.count}${esc(p.unit)}）${g.name?'・'+esc(g.name):''}`:'なし'}</small></span><b>${fmt(p.price*state.cart[p.id])}</b></div>`}).join('')}</section>`+
+ `<section class="receipt"><h3>受取・お客様情報</h3>${[['受取方法','来店受取'],['受取店舗',v.store],['受取希望日',v.date],['受取時間帯',v.time],['お名前',v.name],['電話番号',v.phone],...(v.memo?[['ご要望',v.memo]]:[])].map(([k,val])=>`<div class="line-info"><span class="label">${esc(k)}</span><b>${esc(val)}</b></div>`).join('')}</section>`+
+ `<section class="receipt total"><div class="item"><b>合計（仮金額）</b><strong>${fmt(grand())}</strong></div><p class="hint">表示金額は試作用です。実際の販売価格・消費税・包装料金などは既存受注管理システムの計算ルールに合わせます。</p></section>`+
+ `<div class="bubble"><strong>デモ画面です。</strong><br>「注文内容を確定（デモ）」を押しても、注文情報は外部送信されず、DBにも登録されません。</div>`;
+}
+function renderComplete(){return `<div class="complete"><div class="complete-icon">✓</div><div class="eyebrow">DEMO FINISHED</div><h1 class="title">入力デモが完了しました</h1><p class="subtitle">実際の注文送信・受付処理は行っていません。</p><div class="reference">DEMO-000001</div><p class="hint">正式版では、ここでAWSの注文受付APIへ送信し、社内PC経由でSQL Serverの受付テーブルへ取り込みます。</p><div class="receipt total"><div class="item"><b>商品点数</b><b>${qtySum()}点</b></div><div class="item"><b>仮合計</b><strong>${fmt(grand())}</strong></div></div></div>`}
+function renderFooter(){if(state.step===4)return `<div class="actions"><button class="btn-primary" type="button" data-action="restart">最初から試す ↻</button></div>`;
+ const labels=['受取日時を入力 →','包装・のしへ →','注文内容を確認 →','注文内容を確定（デモ）'];
+ return `<div class="totalsmall"><span>商品 ${qtySum()}点 ／ ${state.step===0?'合計金額（仮）':'注文内容の入力中'}</span><strong>${fmt(grand())}</strong></div><div class="actions">${state.step>0?'<button type="button" class="btn-back" data-action="back">戻る</button>':''}<button type="button" class="btn-primary" data-action="next" ${qtySum()===0?'disabled':''}>${labels[state.step]}</button></div>`}
+function render(){updateSteps();app.innerHTML=[renderProductStep,renderPickupStep,renderGiftStep,renderReviewStep,renderComplete][state.step]();
+ if(state.errors.length)app.insertAdjacentHTML('beforeend',`<div class="error" role="alert">${state.errors.map(esc).join('<br>')}</div>`);footer.innerHTML=renderFooter();}
+function validate(){let v=state.pickup;let errs=[];
+ if(state.step===0&&!qtySum())errs.push('商品を1点以上選んでください。');
+ if(state.step===1){if(!v.date||v.date<isoLocal(today))errs.push('受取希望日を明日以降で指定してください。');if(!v.store)errs.push('受取店舗を選択してください。');if(!v.time)errs.push('受取時間帯を選択してください。');if(!v.name.trim())errs.push('お名前を入力してください。');if(!/^[0-9+()\-\s]{9,20}$/.test(v.phone.trim()))errs.push('電話番号を正しく入力してください（数字・ハイフンなど）。');}
+ if(state.step===2){for(const p of selected()){let g=giftFor(p.id);if(g.noshi&&(!Number.isInteger(+g.count)||g.count<1||g.count>state.cart[p.id]))errs.push(p.name+' ののし数量を確認してください。');}}
+ state.errors=errs;return errs.length===0;}
+function goToNext(){if(!validate()){render();app.querySelector('.error')?.scrollIntoView({behavior:'smooth',block:'nearest'});return;}if(state.step<4){state.step++;state.errors=[];render();document.getElementById('phone').scrollIntoView({behavior:'smooth',block:'start'});}}
+function reset(){state.step=0;state.filter='all';state.search='';state.cart={A0001:2};state.pickup={store:'本店',date:isoLocal(today),time:'10:00〜12:00',name:'',phone:'',memo:''};state.gift={};state.errors=[];render();window.scrollTo({top:0,behavior:'smooth'});}
+document.addEventListener('click',e=>{const button=e.target.closest('[data-action]');if(!button)return;const {action,id,value,key}=button.dataset;
+ if(action==='filter'){state.filter=value;state.errors=[];render();}
+ if(action==='inc'||action==='dec'){const newQty=(state.cart[id]||0)+(action==='inc'?1:-1);state.cart[id]=Math.max(0,Math.min(99,newQty));if(state.gift[id]&&state.gift[id].count>state.cart[id])state.gift[id].count=Math.max(1,state.cart[id]);state.errors=[];render();}
+ if(action==='pickup-option'){state.pickup[key]=value;state.errors=[];render();}
+ if(action==='gift-option'){const g=giftFor(id);g[key]=key==='noshi'?(value==='true'):value;state.errors=[];render();}
+ if(action==='next')goToNext();if(action==='back'){state.step=Math.max(0,state.step-1);state.errors=[];render();}if(action==='restart')reset();
+});
+app.addEventListener('input',e=>{const el=e.target;if(el.dataset.field==='search'){state.search=el.value;const old=document.getElementById('products');if(old){const tab=state.filter;const productHtml=renderProducts();old.outerHTML=productHtml;}}else if(el.dataset.field){state.pickup[el.dataset.field]=el.value;}else if(el.dataset.gift){giftFor(el.dataset.id)[el.dataset.gift]=el.dataset.gift==='count'?Number(el.value):el.value;}});
+app.addEventListener('change',e=>{const el=e.target;if(el.dataset.field)state.pickup[el.dataset.field]=el.value;if(el.dataset.gift)giftFor(el.dataset.id)[el.dataset.gift]=el.dataset.gift==='count'?Number(el.value):el.value;});
+render();
+</script>
+</body>
+</html>
